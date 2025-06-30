@@ -1,0 +1,48 @@
+.article-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: 26px;
+  gap: 26px;
+  padding-bottom: 17px;
+}
+
+:global {
+  .ant-pagination {
+    .ant-pagination-item {
+      background: transparent;
+      border: none;
+
+      &-active {
+        background: #1890ff;
+
+        a {
+          color: white;
+        }
+
+        &:hover {
+          background: #1890ff;
+
+          a {
+            color: white;
+          }
+        }
+      }
+    }
+  }
+}
+
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 17px;
+}
+
+.spin {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+}
