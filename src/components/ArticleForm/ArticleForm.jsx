@@ -16,8 +16,6 @@ export default function ArticleForm({
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles['create-new-article']}>
       <h1 className={styles.title}>{isEdit ? 'Edit Article' : 'Create new article'}</h1>
-
-      {/* Поля формы */}
       <div className={styles['title-create']}>
         <label htmlFor="title-input">Title</label>
         <input
@@ -27,14 +25,6 @@ export default function ArticleForm({
           className={`${styles['title-input']} ${errors.title ? styles.inputError : ''}`}
           {...register('title', {
             required: 'Title is required',
-            minLength: {
-              value: 3,
-              message: 'Title must be at least 3 characters',
-            },
-            maxLength: {
-              value: 100,
-              message: 'Title must be at most 100 characters',
-            },
           })}
         />
         {errors.title && <span className={styles.errorMessage}>{errors.title.message}</span>}
@@ -49,14 +39,6 @@ export default function ArticleForm({
           className={`${styles['short-description']} ${errors.description ? styles.inputError : ''}`}
           {...register('description', {
             required: 'Short description is required',
-            minLength: {
-              value: 10,
-              message: 'Description must be at least 10 characters',
-            },
-            maxLength: {
-              value: 200,
-              message: 'Description must be at most 200 characters',
-            },
           })}
         />
         {errors.description && (
@@ -72,10 +54,6 @@ export default function ArticleForm({
           className={`${styles.text} ${errors.body ? styles.inputError : ''}`}
           {...register('body', {
             required: 'Text is required',
-            minLength: {
-              value: 20,
-              message: 'Text must be at least 20 characters',
-            },
           })}
         />
         {errors.body && <span className={styles.errorMessage}>{errors.body.message}</span>}
