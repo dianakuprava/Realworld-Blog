@@ -11,15 +11,15 @@ import {
 /**
  * @typedef {Object} Article
  * @property {string} slug - Unique article identifier
- * @property {string} title - Article title
+ * @property {string} title - ArticleListItem title
  * @property {boolean} favorited - Favorite status
  * @property {number} favoritesCount - Number of favorites
- * @property {Object} author - Article author
+ * @property {Object} author - ArticleListItem author
  * @property {string} author.username - Author username
  * @property {string} author.image - Author image URL
- * @property {string} description - Article description
- * @property {string} body - Article content
- * @property {string[]} tagList - Article tags
+ * @property {string} description - ArticleListItem description
+ * @property {string} body - ArticleListItem content
+ * @property {string[]} tagList - ArticleListItem tags
  * @property {string} createdAt - Creation date
  * @property {string} updatedAt - Update date
  */
@@ -62,7 +62,7 @@ export const fetchArticles = createAsyncThunk(
 
 /**
  * Fetch single article by slug
- * @param {string} slug - Article slug
+ * @param {string} slug - ArticleListItem slug
  */
 export const fetchArticleBySlug = createAsyncThunk(
   'articles/fetchArticleBySlug',
@@ -96,7 +96,7 @@ export const createNewArticle = createAsyncThunk(
 /**
  * Update existing article
  * @param {Object} params
- * @param {string} params.slug - Article slug to update
+ * @param {string} params.slug - ArticleListItem slug to update
  * @param {Object} params.articleData - Updated article data
  */
 export const updateArticleBySlug = createAsyncThunk(
@@ -114,7 +114,7 @@ export const updateArticleBySlug = createAsyncThunk(
 
 /**
  * Delete article by slug
- * @param {string} slug - Article slug to delete
+ * @param {string} slug - ArticleListItem slug to delete
  */
 export const deleteArticleBySlug = createAsyncThunk(
   'articles/deleteArticleBySlug',
@@ -137,7 +137,7 @@ const handleFavoriteAction = async (slug, token, action) => {
 
 /**
  * Like article
- * @param {string} slug - Article slug to like
+ * @param {string} slug - ArticleListItem slug to like
  */
 export const likeArticle = createAsyncThunk(
   'articles/likeArticle',
@@ -153,7 +153,7 @@ export const likeArticle = createAsyncThunk(
 
 /**
  * Unlike article
- * @param {string} slug - Article slug to unlike
+ * @param {string} slug - ArticleListItem slug to unlike
  */
 export const unlikeArticle = createAsyncThunk(
   'articles/unlikeArticle',

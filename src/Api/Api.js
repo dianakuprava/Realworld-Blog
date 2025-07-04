@@ -3,16 +3,24 @@ import axios from 'axios';
 const API_URL = 'https://blog-platform.kata.academy/api';
 
 export const loginUser = async (userData) => {
-  const response = await axios.post(`${API_URL}/users/login`, {
-    user: userData,
-  }).catch(error => { throw error });
+  const response = await axios
+    .post(`${API_URL}/users/login`, {
+      user: userData,
+    })
+    .catch((error) => {
+      throw error;
+    });
   return response.data;
 };
 
 export const registerUser = async (userData) => {
-  const response = await axios.post(`${API_URL}/users`, {
-    user: userData,
-  }).catch(error => { throw error });
+  const response = await axios
+    .post(`${API_URL}/users`, {
+      user: userData,
+    })
+    .catch((error) => {
+      throw error;
+    });
   return response.data;
 };
 
@@ -50,7 +58,7 @@ export const updateUser = async (userData, token) => {
 
 export const createArticle = async (articleData, token) => {
   try {
-    console.log('Token in createArticle:', token); // для отладки
+    console.log('Token in createArticle:', token);
     const response = await axios.post(
       `${API_URL}/articles`,
       { article: articleData },

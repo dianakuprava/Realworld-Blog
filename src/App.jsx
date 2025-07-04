@@ -5,8 +5,9 @@ import SignIn from '@components/SignIn/SignIn.jsx';
 import SignUp from '@components/SignUp/SignUp.jsx';
 import EditProfile from '@components/EditProfile/EditProfile.jsx';
 import ArticleList from '@components/ArticleList/ArticleList.jsx';
-import ArticleOpen from '@components/ArticleOpen/ArticleOpen.jsx';
-import CreateNewArticle from '@components/CreateNewArticle/CreateNewArticle.jsx';
+import Article from '@components/Article/Article.jsx';
+import CreateArticle from '@components/ArticleForm/CreateArticle/CreateArticle.jsx';
+import EditArticle from '@components/ArticleForm/EditArticle/EditArticle.jsx';
 import AuthSession from '@/Api/AuthSession.jsx';
 import PrivateRoute from '@components/PrivateRoute/PrivateRoute.jsx';
 
@@ -21,12 +22,12 @@ function App() {
             <Route path="/sign-up" component={SignUp} />
             <Route path="/profile" component={EditProfile} />
             <PrivateRoute path="/new-article">
-              <CreateNewArticle />
+              <CreateArticle />
             </PrivateRoute>
             <PrivateRoute path="/articles/:slug/edit">
-              <CreateNewArticle />
+              <EditArticle />
             </PrivateRoute>
-            <Route path="/articles/:slug" component={ArticleOpen} />
+            <Route path="/articles/:slug" component={Article} />
             <Route path="*" component={() => <div>404 Not Found</div>} />
           </Switch>
         </Layout>

@@ -25,12 +25,10 @@ export default function SignUp() {
   const history = useHistory();
   const { loading, isAuthenticated, error } = useSelector((state) => state.auth);
 
-  // Обработка ошибок с сервера
   useEffect(() => {
     if (error?.errors) {
       clearErrors();
 
-      // Обрабатываем ошибки username и email отдельно
       if (error.errors['username']) {
         setError('username', {
           type: 'server',
@@ -44,8 +42,6 @@ export default function SignUp() {
           message: 'is already taken',
         });
       }
-
-      // Обрабатываем остальные ошибки
       Object.entries(error.errors).forEach(([field, messages]) => {
         if (field !== 'username' && field !== 'email') {
           const message = Array.isArray(messages) ? messages.join(' ') : messages;
@@ -95,9 +91,7 @@ export default function SignUp() {
             placeholder="Username"
             className={`${styles.input} ${errors.username ? styles.inputError : ''}`}
           />
-          {errors.username && (
-            <p className={styles.errorMessage}>{errors.username.message}</p>
-          )}
+          {errors.username && <p className={styles.errorMessage}>{errors.username.message}</p>}
         </div>
 
         <div className={styles.formGroup}>
@@ -114,9 +108,7 @@ export default function SignUp() {
             placeholder="Email address"
             className={`${styles.input} ${errors.email ? styles.inputError : ''}`}
           />
-          {errors.email && (
-            <p className={styles.errorMessage}>{errors.email.message}</p>
-          )}
+          {errors.email && <p className={styles.errorMessage}>{errors.email.message}</p>}
         </div>
         <div className={styles.formGroup}>
           <label className={styles.label}>Password</label>

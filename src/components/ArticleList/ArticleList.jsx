@@ -8,7 +8,7 @@ import {
   unlikeArticle,
 } from '@/store/slices/articlesSlice.js';
 import { Pagination, Spin, Alert } from 'antd';
-import Article from '../Article/Article';
+import ArticleListItem from '.././ArticleListItem/ArticleListItem.jsx';
 import styles from './ArticleList.module.scss';
 
 export default function ArticleList() {
@@ -63,11 +63,7 @@ export default function ArticleList() {
   return (
     <div className={styles['article-list']}>
       {articles.map((article) => (
-        <Article
-          key={article.slug}
-          article={article}
-          onLikeClick={handleLikeClick}
-        />
+        <ArticleListItem key={article.slug} article={article} onLikeClick={handleLikeClick} />
       ))}
       <div className={styles['pagination-container']}>
         <Pagination

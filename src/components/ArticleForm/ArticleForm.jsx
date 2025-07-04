@@ -1,114 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { useHistory, useParams } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  fetchArticleBySlug,
-  createNewArticle,
-  updateArticleBySlug,
-  clearCurrentArticle,
-} from '@/store/slices/articlesSlice.js';
-import styles from './CreateNewArticle.module.scss';
+import React from 'react';
+import styles from './ArticleForm.module.scss';
 
-export default function CreateNewArticle() {
-  const { slug } = useParams();
-  const history = useHistory();
-  const dispatch = useDispatch();
-
-  const { currentArticle, loading, submitting, error } = useSelector((state) => state.articles);
-  const { isAuthenticated } = useSelector((state) => state.auth);
-  const [tags, setTags] = useState(['']);
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    setValue,
-    setError,
-    clearErrors,
-  } = useForm({
-    mode: 'onBlur',
-  });
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      history.replace('/sign-in');
-      return;
-    }
-    if (slug) {
-      dispatch(fetchArticleBySlug(slug));
-    }
-    return () => {
-      dispatch(clearCurrentArticle());
-    };
-  }, [slug, isAuthenticated, history, dispatch]);
-
-  useEffect(() => {
-    if (slug && currentArticle) {
-      setValue('title', currentArticle.title);
-      setValue('description', currentArticle.description);
-      setValue('body', currentArticle.body);
-      setTags(currentArticle.tagList.length > 0 ? [...currentArticle.tagList, ''] : ['']);
-    }
-  }, [currentArticle, slug, setValue]);
-
-  // Обработка ошибок с сервера
-  useEffect(() => {
-    if (error?.errors) {
-      clearErrors();
-      Object.entries(error.errors).forEach(([field, messages]) => {
-        setError(field.toLowerCase(), {
-          type: 'server',
-          message: Array.isArray(messages) ? messages.join(' ') : messages,
-        });
-      });
-    }
-  }, [error, setError, clearErrors]);
-
-  const handleTagChange = (index, value) => {
-    const newTags = [...tags];
-    newTags[index] = value;
-    setTags(newTags);
-  };
-
-  const handleAddTag = () => {
-    if (tags[tags.length - 1].trim() !== '') {
-      setTags([...tags, '']);
-    }
-  };
-
-  const handleDeleteTag = (index) => {
-    if (tags.length > 1) {
-      setTags(tags.filter((_, i) => i !== index));
-    }
-  };
-
-  const onSubmit = async (data) => {
-    const nonEmptyTags = tags.filter((tag) => tag.trim() !== '');
-    const articleData = {
-      ...data,
-      tagList: nonEmptyTags,
-    };
-
-    try {
-      if (slug) {
-        await dispatch(updateArticleBySlug({ slug, articleData })).unwrap();
-        history.push(`/articles/${slug}`);
-      } else {
-        await dispatch(createNewArticle(articleData)).unwrap();
-        history.push('/');
-      }
-    } catch (error) {
-      console.error('Article submission error:', error);
-    }
-  };
-
-  if (loading || !isAuthenticated) return null;
-
+export default function ArticleForm({
+  register,
+  handleSubmit,
+  errors,
+  tags,
+  handleTagChange,
+  handleAddTag,
+  handleDeleteTag,
+  onSubmit,
+  submitting,
+  isEdit,
+}) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className={styles['create-new-article']}>
-      <h1 className={styles.title}>{slug ? 'Edit Article' : 'Create new article'}</h1>
+      <h1 className={styles.title}>{isEdit ? 'Edit Article' : 'Create new article'}</h1>
 
+      {/* Поля формы */}
       <div className={styles['title-create']}>
         <label htmlFor="title-input">Title</label>
         <input
@@ -128,9 +37,7 @@ export default function CreateNewArticle() {
             },
           })}
         />
-        {errors.title && (
-          <span className={styles.errorMessage}>{errors.title.message}</span>
-        )}
+        {errors.title && <span className={styles.errorMessage}>{errors.title.message}</span>}
       </div>
 
       <div className={styles['create-short-description']}>
@@ -171,9 +78,7 @@ export default function CreateNewArticle() {
             },
           })}
         />
-        {errors.body && (
-          <span className={styles.errorMessage}>{errors.body.message}</span>
-        )}
+        {errors.body && <span className={styles.errorMessage}>{errors.body.message}</span>}
       </div>
 
       <div className={styles['create-tags']}>
@@ -213,7 +118,7 @@ export default function CreateNewArticle() {
       </div>
 
       <button type="submit" className={styles['send-button']} disabled={submitting}>
-        {submitting ? 'Submitting...' : 'Send'}
+        {submitting ? 'Submitting...' : isEdit ? 'Update' : 'Create'}
       </button>
     </form>
   );
