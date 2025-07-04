@@ -5,7 +5,7 @@ import styles from './Article.module.scss';
 import React from 'react';
 import LikeIcon from '/src/assets/like.svg';
 import ActiveLikeIcon from '/src/assets/active-like.svg';
-import { truncateText } from '@components/Utils/truncateText.js';
+import { truncateText } from '@/Utils/truncateText.js';
 
 export default function Article({ article, onLikeClick }) {
   if (!article) return null;

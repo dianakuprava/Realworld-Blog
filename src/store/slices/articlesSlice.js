@@ -6,7 +6,7 @@ import {
   getArticleBySlug,
   favoriteArticle,
   unfavoriteArticle,
-} from '@components/Api/Api.js';
+} from '@/Api/Api.js';
 
 /**
  * @typedef {Object} Article
@@ -38,15 +38,21 @@ import {
  */
 export const fetchArticles = createAsyncThunk(
   'articles/fetchArticles',
-  async ({ limit, offset }, { rejectWithValue }) => {
+  async ({ limit, offset }, { getState, rejectWithValue }) => {
     try {
+      const token = getState().auth?.token || null;
+      const headers = token ? { Authorization: `Token ${token}` } : {};
+
       const response = await fetch(
-        `https://blog-platform.kata.academy/api/articles?limit=${limit}&offset=${offset}`
+        `https://blog-platform.kata.academy/api/articles?limit=${limit}&offset=${offset}`,
+        { headers }
       );
+
       if (!response.ok) {
         const errorData = await response.json();
         return rejectWithValue(errorData);
       }
+
       return response.json();
     } catch (err) {
       return rejectWithValue(err.message || 'Failed to fetch articles');
@@ -161,11 +167,11 @@ export const unlikeArticle = createAsyncThunk(
   }
 );
 
-// Helper to update articles cache
 const updateArticlesCache = (state, updatedArticle) => {
   if (state.currentArticle?.slug === updatedArticle.slug) {
     state.currentArticle = updatedArticle;
   }
+
   Object.keys(state.articlesByPage).forEach((page) => {
     state.articlesByPage[page] = state.articlesByPage[page].map((article) =>
       article.slug === updatedArticle.slug ? updatedArticle : article

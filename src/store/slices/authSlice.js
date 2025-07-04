@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { loginUser, registerUser, getCurrentUser, updateUser } from '@components/Api/Api.js';
+import { loginUser, registerUser, getCurrentUser, updateUser } from '@/Api/Api.js';
 
 /**
  * Handle authentication errors consistently

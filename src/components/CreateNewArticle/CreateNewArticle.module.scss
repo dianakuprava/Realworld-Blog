@@ -162,3 +162,14 @@
     }
   }
 }
+
+.inputError {
+  border-color: #f5222d;
+}
+
+.errorMessage {
+  color: #f5222d;
+  font-size: 14px;
+  margin-top: 4px;
+  display: block;
+}

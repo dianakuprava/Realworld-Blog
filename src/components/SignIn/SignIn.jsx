@@ -13,6 +13,7 @@ export default function SignIn() {
     handleSubmit,
     formState: { errors },
     setError,
+    clearErrors,
   } = useForm({
     mode: 'onBlur',
   });
@@ -23,12 +24,13 @@ export default function SignIn() {
 
   useEffect(() => {
     if (apiError?.errors && apiError.errors['email or password']) {
+      clearErrors();
       setError('password', {
         type: 'server',
-        message: apiError.errors['email or password'],
+        message: 'Email or password is invalid',
       });
     }
-  }, [apiError, setError]);
+  }, [apiError, setError, clearErrors]);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -60,14 +62,9 @@ export default function SignIn() {
                 message: 'Please enter a valid email',
               },
             })}
-            className={`${styles.input} ${errors.email ? styles.inputError : ''}`}
+            className={styles.input}
             placeholder="Email address"
           />
-          {errors.email && (
-            <p className={styles.errorMessage}>
-              <span className={styles.errorIcon}>•</span> {errors.email.message}
-            </p>
-          )}
         </div>
 
         <div className={styles.formGroup}>
@@ -77,14 +74,6 @@ export default function SignIn() {
               type={showPassword ? 'text' : 'password'}
               {...register('password', {
                 required: 'Password is required',
-                minLength: {
-                  value: 6,
-                  message: 'Password must be at least 6 characters',
-                },
-                maxLength: {
-                  value: 40,
-                  message: 'Password must be at most 40 characters',
-                },
               })}
               className={`${styles.input} ${errors.password ? styles.inputError : ''}`}
               placeholder="Password"

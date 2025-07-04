@@ -63,7 +63,11 @@ export default function ArticleList() {
   return (
     <div className={styles['article-list']}>
       {articles.map((article) => (
-        <Article key={article.slug} article={article} onLikeClick={handleLikeClick} />
+        <Article
+          key={article.slug}
+          article={article}
+          onLikeClick={handleLikeClick}
+        />
       ))}
       <div className={styles['pagination-container']}>
         <Pagination

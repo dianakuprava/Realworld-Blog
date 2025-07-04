@@ -1,8 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
 import { register as registerUser } from '@/store/slices/authSlice';
 import { EyeInvisibleOutlined, EyeOutlined } from '@ant-design/icons';
 import styles from './SignUp.module.scss';
@@ -17,6 +16,7 @@ export default function SignUp() {
     watch,
     formState: { errors },
     setError,
+    clearErrors,
   } = useForm({
     mode: 'onBlur',
   });
@@ -25,19 +25,38 @@ export default function SignUp() {
   const history = useHistory();
   const { loading, isAuthenticated, error } = useSelector((state) => state.auth);
 
+  // Обработка ошибок с сервера
   useEffect(() => {
     if (error?.errors) {
-      if (error.errors.username) {
-        setError('username', { type: 'server', message: error.errors.username });
+      clearErrors();
+
+      // Обрабатываем ошибки username и email отдельно
+      if (error.errors['username']) {
+        setError('username', {
+          type: 'server',
+          message: 'is already taken',
+        });
       }
-      if (error.errors.email) {
-        setError('email', { type: 'server', message: error.errors.email });
+
+      if (error.errors['email']) {
+        setError('email', {
+          type: 'server',
+          message: 'is already taken',
+        });
       }
-      if (error.errors.password) {
-        setError('password', { type: 'server', message: error.errors.password });
-      }
+
+      // Обрабатываем остальные ошибки
+      Object.entries(error.errors).forEach(([field, messages]) => {
+        if (field !== 'username' && field !== 'email') {
+          const message = Array.isArray(messages) ? messages.join(' ') : messages;
+          setError(field.toLowerCase(), {
+            type: 'server',
+            message: message,
+          });
+        }
+      });
     }
-  }, [error, setError]);
+  }, [error, setError, clearErrors]);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -76,8 +95,11 @@ export default function SignUp() {
             placeholder="Username"
             className={`${styles.input} ${errors.username ? styles.inputError : ''}`}
           />
-          {errors.username && <p className={styles.errorMessage}>• {errors.username.message}</p>}
+          {errors.username && (
+            <p className={styles.errorMessage}>{errors.username.message}</p>
+          )}
         </div>
+
         <div className={styles.formGroup}>
           <label className={styles.label}>Email address</label>
           <input
@@ -92,7 +114,9 @@ export default function SignUp() {
             placeholder="Email address"
             className={`${styles.input} ${errors.email ? styles.inputError : ''}`}
           />
-          {errors.email && <p className={styles.errorMessage}>• {errors.email.message}</p>}
+          {errors.email && (
+            <p className={styles.errorMessage}>{errors.email.message}</p>
+          )}
         </div>
         <div className={styles.formGroup}>
           <label className={styles.label}>Password</label>
@@ -121,8 +145,9 @@ export default function SignUp() {
               )}
             </span>
           </div>
-          {errors.password && <p className={styles.errorMessage}>• {errors.password.message}</p>}
+          {errors.password && <p className={styles.errorMessage}>{errors.password.message}</p>}
         </div>
+
         <div className={styles.formGroup}>
           <label className={styles.label}>Repeat Password</label>
           <div className={styles.passwordInputContainer}>
@@ -147,9 +172,10 @@ export default function SignUp() {
             </span>
           </div>
           {errors.confirmPassword && (
-            <p className={styles.errorMessage}>• {errors.confirmPassword.message}</p>
+            <p className={styles.errorMessage}>{errors.confirmPassword.message}</p>
           )}
         </div>
+
         <div className={styles.checkboxGroup}>
           <label className={styles.checkboxLabel}>
             <input
@@ -161,11 +187,13 @@ export default function SignUp() {
             />
             <span>I agree to the processing of my personal information</span>
           </label>
-          {errors.agreement && <p className={styles.errorMessage}>• {errors.agreement.message}</p>}
+          {errors.agreement && <p className={styles.errorMessage}>{errors.agreement.message}</p>}
         </div>
+
         <button type="submit" className={styles.submitButton} disabled={loading}>
           {loading ? 'Creating...' : 'Create'}
         </button>
+
         <div className={styles.loginLink}>
           Already have an account?{' '}
           <Link to="/sign-in" className={styles.link}>

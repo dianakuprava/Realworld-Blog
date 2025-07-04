@@ -3,25 +3,17 @@ import axios from 'axios';
 const API_URL = 'https://blog-platform.kata.academy/api';
 
 export const loginUser = async (userData) => {
-  try {
-    const response = await axios.post(`${API_URL}/users/login`, {
-      user: userData,
-    });
-    return response.data;
-  } catch (error) {
-    throw error.response.data;
-  }
+  const response = await axios.post(`${API_URL}/users/login`, {
+    user: userData,
+  }).catch(error => { throw error });
+  return response.data;
 };
 
 export const registerUser = async (userData) => {
-  try {
-    const response = await axios.post(`${API_URL}/users`, {
-      user: userData,
-    });
-    return response.data;
-  } catch (error) {
-    throw error.response.data;
-  }
+  const response = await axios.post(`${API_URL}/users`, {
+    user: userData,
+  }).catch(error => { throw error });
+  return response.data;
 };
 
 export const getCurrentUser = async (token) => {

@@ -7,7 +7,7 @@ import EditProfile from '@components/EditProfile/EditProfile.jsx';
 import ArticleList from '@components/ArticleList/ArticleList.jsx';
 import ArticleOpen from '@components/ArticleOpen/ArticleOpen.jsx';
 import CreateNewArticle from '@components/CreateNewArticle/CreateNewArticle.jsx';
-import AuthSession from '@components/Api/AuthSession.jsx';
+import AuthSession from '@/Api/AuthSession.jsx';
 import PrivateRoute from '@components/PrivateRoute/PrivateRoute.jsx';
 
 function App() {
@@ -27,6 +27,7 @@ function App() {
               <CreateNewArticle />
             </PrivateRoute>
             <Route path="/articles/:slug" component={ArticleOpen} />
+            <Route path="*" component={() => <div>404 Not Found</div>} />
           </Switch>
         </Layout>
       </AuthSession>

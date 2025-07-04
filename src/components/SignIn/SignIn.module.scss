@@ -109,3 +109,23 @@
   margin-right: 4px;
   font-weight: bold;
 }
+
+.serverError {
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: #fff6f6;
+  border: 1px solid #ffcccc;
+  border-radius: 4px;
+
+  .inputError {
+    border-color: #f5222d !important;
+  }
+
+  .errorMessage {
+    color: #ff4d4f;
+    margin: 0;
+  }
+}
+
+
+

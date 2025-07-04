@@ -15,7 +15,7 @@ export default function CreateNewArticle() {
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const { currentArticle, loading, submitting } = useSelector((state) => state.articles);
+  const { currentArticle, loading, submitting, error } = useSelector((state) => state.articles);
   const { isAuthenticated } = useSelector((state) => state.auth);
   const [tags, setTags] = useState(['']);
 
@@ -24,7 +24,11 @@ export default function CreateNewArticle() {
     handleSubmit,
     formState: { errors },
     setValue,
-  } = useForm();
+    setError,
+    clearErrors,
+  } = useForm({
+    mode: 'onBlur',
+  });
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -48,6 +52,19 @@ export default function CreateNewArticle() {
     }
   }, [currentArticle, slug, setValue]);
 
+  // Обработка ошибок с сервера
+  useEffect(() => {
+    if (error?.errors) {
+      clearErrors();
+      Object.entries(error.errors).forEach(([field, messages]) => {
+        setError(field.toLowerCase(), {
+          type: 'server',
+          message: Array.isArray(messages) ? messages.join(' ') : messages,
+        });
+      });
+    }
+  }, [error, setError, clearErrors]);
+
   const handleTagChange = (index, value) => {
     const newTags = [...tags];
     newTags[index] = value;
@@ -66,19 +83,23 @@ export default function CreateNewArticle() {
     }
   };
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     const nonEmptyTags = tags.filter((tag) => tag.trim() !== '');
     const articleData = {
       ...data,
       tagList: nonEmptyTags,
     };
 
-    if (slug) {
-      dispatch(updateArticleBySlug({ slug, articleData })).then(() =>
-        history.push(`/articles/${slug}`)
-      );
-    } else {
-      dispatch(createNewArticle(articleData)).then(() => history.push('/'));
+    try {
+      if (slug) {
+        await dispatch(updateArticleBySlug({ slug, articleData })).unwrap();
+        history.push(`/articles/${slug}`);
+      } else {
+        await dispatch(createNewArticle(articleData)).unwrap();
+        history.push('/');
+      }
+    } catch (error) {
+      console.error('Article submission error:', error);
     }
   };
 
@@ -94,10 +115,22 @@ export default function CreateNewArticle() {
           id="title-input"
           type="text"
           placeholder="Title"
-          className={styles['title-input']}
-          {...register('title', { required: 'Title is required' })}
+          className={`${styles['title-input']} ${errors.title ? styles.inputError : ''}`}
+          {...register('title', {
+            required: 'Title is required',
+            minLength: {
+              value: 3,
+              message: 'Title must be at least 3 characters',
+            },
+            maxLength: {
+              value: 100,
+              message: 'Title must be at most 100 characters',
+            },
+          })}
         />
-        {errors.title && <span className={styles.error}>{errors.title.message}</span>}
+        {errors.title && (
+          <span className={styles.errorMessage}>{errors.title.message}</span>
+        )}
       </div>
 
       <div className={styles['create-short-description']}>
@@ -106,10 +139,22 @@ export default function CreateNewArticle() {
           id="short-description"
           type="text"
           placeholder="Short description"
-          className={styles['short-description']}
-          {...register('description', { required: 'Description is required' })}
+          className={`${styles['short-description']} ${errors.description ? styles.inputError : ''}`}
+          {...register('description', {
+            required: 'Short description is required',
+            minLength: {
+              value: 10,
+              message: 'Description must be at least 10 characters',
+            },
+            maxLength: {
+              value: 200,
+              message: 'Description must be at most 200 characters',
+            },
+          })}
         />
-        {errors.description && <span className={styles.error}>{errors.description.message}</span>}
+        {errors.description && (
+          <span className={styles.errorMessage}>{errors.description.message}</span>
+        )}
       </div>
 
       <div className={styles['text-create']}>
@@ -117,10 +162,18 @@ export default function CreateNewArticle() {
         <textarea
           id="text"
           placeholder="Text (markdown supported)"
-          className={styles.text}
-          {...register('body', { required: 'Text is required' })}
+          className={`${styles.text} ${errors.body ? styles.inputError : ''}`}
+          {...register('body', {
+            required: 'Text is required',
+            minLength: {
+              value: 20,
+              message: 'Text must be at least 20 characters',
+            },
+          })}
         />
-        {errors.body && <span className={styles.error}>{errors.body.message}</span>}
+        {errors.body && (
+          <span className={styles.errorMessage}>{errors.body.message}</span>
+        )}
       </div>
 
       <div className={styles['create-tags']}>

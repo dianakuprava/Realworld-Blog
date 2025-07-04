@@ -94,11 +94,15 @@
   .user-info {
     display: flex;
     flex-direction: column;
+    max-width: 100px;
 
     .nickname {
       height: 28px;
       font-size: 18px;
       line-height: 28px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .data {
